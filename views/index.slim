@@ -1,0 +1,46 @@
+#content
+
+/
+/ Handlebars
+/
+script#question type="text/x-handlebars-template"
+  .row
+    p.center-align.flow-text.col.s10.offset-s1
+      | {{answer.definition}}
+
+  | {{#each options}}
+  .row
+    .col.s6.offset-s3 style="display:inline-block"
+      a.answer-button.waves-effect.waves-light.btn data="{{this.definition}}" style="display:block"
+        | {{this.term}}
+  | {{/each}}
+  .row
+    .col.s6.offset-s3
+      a#new-question.waves-effect.waves-light.btn.right.hide Next
+  
+script#loading type="text/x-handlebars-template"
+  .progress
+    .indeterminate
+  
+coffee:
+  loading = () ->
+    source = $('#loading').html()
+    $('#content').html(Handlebars.compile(source))
+    
+  new_question = () ->
+    loading()
+    $.getJSON '/question', (data) ->
+      source = $('#question').html()
+      $('#content').html(Handlebars.compile(source)(data))
+      
+      $('.answer-button').click () ->
+        $('.answer-button').each () ->
+          color = if $(this).attr('data') == data.answer.definition then 'green' else 'red'
+          $(this).addClass(color)
+          
+        $('#new-question').click new_question
+        $('#new-question').removeClass('hide')
+    
+  new_question()
+    
+  
