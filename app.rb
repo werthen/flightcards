@@ -7,9 +7,7 @@ require 'yaml'
 data = YAML.load_file('data.yaml')['terms']
 
 get '/' do
-  options = data.sample(3)
-  answer = options.sample
-  slim :index, locals: { data: { answer: answer, options: options } }
+  slim :index
 end
 
 get '/question' do
